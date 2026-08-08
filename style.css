@@ -2,6 +2,15 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -12,20 +21,33 @@ body {
     align-items: center;
     min-height: 100vh;
     color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .container {
     text-align: center;
     background: rgba(0, 0, 0, 0.3);
-    padding: 30px;
+    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(4px);
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
+    font-size: 2.5em;
+    margin-bottom: 15px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: 2px;
     background: linear-gradient(45deg, #00d4ff, #0099ff);
@@ -38,12 +60,14 @@ h1 {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 20px;
-    gap: 40px;
+    margin-bottom: 15px;
+    gap: 20px;
     background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
+    padding: 12px;
     border-radius: 10px;
     border: 2px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+    max-width: 600px;
 }
 
 .player-score,
@@ -53,14 +77,14 @@ h1 {
 
 .player-score h2,
 .computer-score h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
+    font-size: 1em;
+    margin-bottom: 8px;
     color: #00d4ff;
 }
 
 #playerScore,
 #computerScore {
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: bold;
     color: #00ff88;
     text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
@@ -68,7 +92,7 @@ h1 {
 
 .center-text {
     flex: 1;
-    font-size: 0.9em;
+    font-size: 0.75em;
     color: #ffff00;
     text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
 }
@@ -78,36 +102,234 @@ h1 {
     background: #000;
     border: 3px solid #00d4ff;
     border-radius: 10px;
-    margin: 20px auto;
+    margin: 10px auto;
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
     cursor: none;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .instructions {
-    margin-top: 20px;
-    font-size: 0.95em;
+    margin-top: 10px;
+    font-size: 0.85em;
     color: #ffff00;
     text-shadow: 0 0 5px rgba(255, 255, 0, 0.3);
-    line-height: 1.6;
+    line-height: 1.4;
+    max-width: 600px;
 }
 
-@media (max-width: 900px) {
+.mobile-controls {
+    display: none;
+    gap: 15px;
+    margin-top: 15px;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+}
+
+.mobile-controls.show {
+    display: flex;
+}
+
+.control-btn {
+    padding: 15px;
+    font-size: 1.5em;
+    background: linear-gradient(135deg, #00d4ff, #0099ff);
+    border: 2px solid #00ffff;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    active: scale(0.95);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.8);
+}
+
+.up-btn, .down-btn {
+    min-height: 60px;
+}
+
+/* Media queries for different screen sizes */
+@media (max-width: 768px) {
     .container {
-        padding: 20px;
+        padding: 15px;
     }
 
     h1 {
         font-size: 2em;
     }
 
+    .scoreboard {
+        padding: 10px;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .player-score h2,
+    .computer-score h2 {
+        font-size: 0.9em;
+    }
+
+    #playerScore,
+    #computerScore {
+        font-size: 1.8em;
+    }
+
+    .center-text {
+        font-size: 0.7em;
+    }
+
     #gameCanvas {
-        width: 100%;
-        height: auto;
-        max-width: 600px;
+        margin: 8px auto;
+        border: 2px solid #00d4ff;
+        max-width: 95%;
+        min-height: 250px;
+    }
+
+    .instructions {
+        font-size: 0.75em;
+        margin-top: 8px;
+    }
+
+    .mobile-controls.show {
+        display: flex;
+    }
+
+    .control-btn {
+        padding: 12px;
+        font-size: 1.2em;
+        min-height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
     }
 
     .scoreboard {
-        flex-direction: column;
-        gap: 15px;
+        padding: 8px;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .player-score h2,
+    .computer-score h2 {
+        font-size: 0.75em;
+    }
+
+    #playerScore,
+    #computerScore {
+        font-size: 1.5em;
+    }
+
+    .center-text {
+        font-size: 0.6em;
+    }
+
+    #gameCanvas {
+        margin: 5px auto;
+        border: 2px solid #00d4ff;
+        max-width: 98%;
+        min-height: 220px;
+        max-height: 280px;
+    }
+
+    .instructions {
+        font-size: 0.7em;
+        margin-top: 5px;
+    }
+
+    .mobile-controls.show {
+        margin-top: 10px;
+        gap: 10px;
+    }
+
+    .control-btn {
+        padding: 10px;
+        font-size: 1em;
+        min-height: 45px;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 500px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 5px;
+    }
+
+    .scoreboard {
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+
+    .player-score h2,
+    .computer-score h2 {
+        font-size: 0.65em;
+    }
+
+    #playerScore,
+    #computerScore {
+        font-size: 1.3em;
+    }
+
+    .center-text {
+        font-size: 0.55em;
+    }
+
+    #gameCanvas {
+        margin: 3px auto;
+        min-height: 150px;
+        max-height: calc(100vh - 150px);
+    }
+
+    .instructions {
+        font-size: 0.65em;
+        margin-top: 3px;
+    }
+
+    .mobile-controls.show {
+        margin-top: 5px;
+        gap: 5px;
+    }
+
+    .control-btn {
+        padding: 8px;
+        font-size: 0.9em;
+        min-height: 40px;
+    }
+}
+
+/* Prevent zoom on input focus */
+input, button, textarea, select {
+    font-size: 16px;
+}
+
+/* Safe area for notch devices */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
 }
