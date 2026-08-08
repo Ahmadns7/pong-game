@@ -2,29 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MercuReal Pong">
+    <meta name="theme-color" content="#667eea">
     <title>MercuReal Pong</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23667eea' width='180' height='180'/><circle cx='90' cy='90' r='40' fill='%23ff00ff'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23667eea' width='180' height='180'/><circle cx='90' cy='90' r='40' fill='%23ff00ff'/></svg>">
 </head>
 <body>
     <div class="container">
         <h1>MercuReal Pong</h1>
         <div class="scoreboard">
             <div class="player-score">
-                <h2>Player</h2>
+                <h2>You</h2>
                 <p id="playerScore">0</p>
             </div>
             <div class="center-text">
-                <p>Use Mouse Y or Arrow Keys ↑↓ to Move</p>
+                <p id="controlsText">Swipe or Tap to Move</p>
             </div>
             <div class="computer-score">
-                <h2>Computer</h2>
+                <h2>AI</h2>
                 <p id="computerScore">0</p>
             </div>
         </div>
         <canvas id="gameCanvas" width="800" height="400"></canvas>
         <div class="instructions">
-            <p>First to 5 points wins! Press SPACE to start/pause the game.</p>
+            <p>First to 5 points wins! <span id="startText">Tap canvas to start</span></p>
+        </div>
+        <div class="mobile-controls" id="mobileControls">
+            <button id="upBtn" class="control-btn up-btn">▲</button>
+            <button id="downBtn" class="control-btn down-btn">▼</button>
         </div>
     </div>
     <script src="script.js"></script>
