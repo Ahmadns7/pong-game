@@ -10,20 +10,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     const ctx = canvas.getContext('2d');
+    
+    // Detect if device is mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Resize canvas for mobile devices
+    function resizeCanvasForMobile() {
+        const container = canvas.parentElement;
+        const maxWidth = window.innerWidth * 0.95;
+        const maxHeight = window.innerHeight * 0.5;
+        
+        let width = 800;
+        let height = 400;
+        
+        const aspectRatio = width / height;
+        
+        if (maxWidth < width) {
+            width = maxWidth;
+            height = width / aspectRatio;
+        }
+        
+        if (height > maxHeight) {
+            height = maxHeight;
+            width = height * aspectRatio;
+        }
+        
+        canvas.width = Math.floor(width);
+        canvas.height = Math.floor(height);
+    }
+    
+    if (isMobile) {
+        resizeCanvasForMobile();
+        window.addEventListener('resize', resizeCanvasForMobile);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(resizeCanvasForMobile, 100);
+        });
+    }
 
     // Game variables
     let gameRunning = false;
     let playerScore = 0;
     let computerScore = 0;
 
-    // Paddle properties
-    const paddleWidth = 10;
-    const paddleHeight = 80;
-    const paddleSpeed = 6;
+    // Paddle properties (adaptive to canvas size)
+    const paddleWidth = canvas.width * 0.015;
+    const paddleHeight = canvas.height * 0.25;
+    const paddleSpeed = canvas.height * 0.03;
 
     // Player paddle
     const player = {
-        x: 10,
+        x: canvas.width * 0.01,
         y: canvas.height / 2 - paddleHeight / 2,
         width: paddleWidth,
         height: paddleHeight,
@@ -32,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Computer paddle
     const computer = {
-        x: canvas.width - paddleWidth - 10,
+        x: canvas.width - paddleWidth - canvas.width * 0.01,
         y: canvas.height / 2 - paddleHeight / 2,
         width: paddleWidth,
         height: paddleHeight,
@@ -43,16 +79,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const ball = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        radius: 6,
-        dx: 5,
-        dy: 5,
-        speed: 5
+        radius: canvas.height * 0.02,
+        dx: canvas.width * 0.008,
+        dy: canvas.height * 0.01,
+        speed: canvas.width * 0.008
     };
 
     // Input handling
     const keys = {};
     let mouseY = canvas.height / 2;
+    
+    // Touch variables
+    let touchY = canvas.height / 2;
+    let isTouching = false;
+    let lastTouchTime = 0;
 
+    // Desktop keyboard input
     document.addEventListener('keydown', (e) => {
         keys[e.key] = true;
 
@@ -67,18 +109,101 @@ document.addEventListener('DOMContentLoaded', function() {
         keys[e.key] = false;
     });
 
+    // Mouse input for desktop
     document.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         mouseY = e.clientY - rect.top;
     });
 
+    // Canvas click to start
+    canvas.addEventListener('click', (e) => {
+        if (!isMobile) {
+            e.preventDefault();
+            gameRunning = !gameRunning;
+        }
+    });
+
+    // Touch input for mobile
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        isTouching = true;
+        lastTouchTime = Date.now();
+        handleTouchMove(e);
+        
+        // Double tap to start/pause on mobile
+        if (Date.now() - lastTouchTime < 300) {
+            gameRunning = !gameRunning;
+        }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        handleTouchMove(e);
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isTouching = false;
+    }, { passive: false });
+
+    function handleTouchMove(e) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        touchY = touch.clientY - rect.top;
+        
+        // Ensure touch is within canvas bounds
+        if (touchY < 0) touchY = 0;
+        if (touchY > canvas.height) touchY = canvas.height;
+    }
+
+    // Mobile control buttons
+    const upBtn = document.getElementById('upBtn');
+    const downBtn = document.getElementById('downBtn');
+    const mobileControls = document.getElementById('mobileControls');
+
+    if (isMobile && mobileControls) {
+        mobileControls.classList.add('show');
+        
+        // Up button
+        if (upBtn) {
+            upBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                keys['ArrowUp'] = true;
+            }, { passive: false });
+            upBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                keys['ArrowUp'] = false;
+            }, { passive: false });
+        }
+        
+        // Down button
+        if (downBtn) {
+            downBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                keys['ArrowDown'] = true;
+            }, { passive: false });
+            downBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                keys['ArrowDown'] = false;
+            }, { passive: false });
+        }
+    }
+
     // Update game state
     function update() {
         if (!gameRunning) return;
 
-        // Player paddle movement (mouse Y and arrow keys)
-        if (mouseY - paddleHeight / 2 < canvas.height - paddleHeight && mouseY - paddleHeight / 2 > 0) {
-            player.y = mouseY - paddleHeight / 2;
+        // Player paddle movement
+        if (isTouching) {
+            // Touch input
+            if (touchY - paddleHeight / 2 < canvas.height - paddleHeight && touchY - paddleHeight / 2 > 0) {
+                player.y = touchY - paddleHeight / 2;
+            }
+        } else {
+            // Mouse input
+            if (mouseY - paddleHeight / 2 < canvas.height - paddleHeight && mouseY - paddleHeight / 2 > 0) {
+                player.y = mouseY - paddleHeight / 2;
+            }
         }
 
         if (keys['ArrowUp'] && player.y > 0) {
@@ -161,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Limit ball speed
-        const maxSpeed = 8;
+        const maxSpeed = canvas.width * 0.02;
         if (Math.abs(ball.dx) > maxSpeed) ball.dx = (ball.dx / Math.abs(ball.dx)) * maxSpeed;
         if (Math.abs(ball.dy) > maxSpeed) ball.dy = (ball.dy / Math.abs(ball.dy)) * maxSpeed;
     }
@@ -170,8 +295,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetBall() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
-        ball.dx = (Math.random() > 0.5 ? 1 : -1) * 5;
-        ball.dy = (Math.random() - 0.5) * 5;
+        ball.dx = (Math.random() > 0.5 ? 1 : -1) * canvas.width * 0.008;
+        ball.dy = (Math.random() - 0.5) * canvas.height * 0.01;
         gameRunning = false;
     }
 
@@ -237,9 +362,10 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ffff00';
-            ctx.font = 'bold 24px Arial';
+            ctx.font = `bold ${canvas.width * 0.04}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText('Press SPACE to Start', canvas.width / 2, canvas.height / 2);
+            const startText = isMobile ? 'Tap to Start' : 'Press SPACE to Start';
+            ctx.fillText(startText, canvas.width / 2, canvas.height / 2);
         }
     }
 
@@ -266,4 +392,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start the game
     gameLoop();
+
+    // Prevent default touch behaviors
+    document.addEventListener('touchmove', function(e) {
+        if (e.target === canvas) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 });
