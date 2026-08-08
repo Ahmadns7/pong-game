@@ -1,0 +1,35 @@
+{
+  "name": "MercuReal Pong - A Modern Pong Game",
+  "short_name": "Pong Game",
+  "description": "Play classic Pong against an AI opponent on your mobile device or desktop",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23667eea' width='192' height='192'/><circle cx='96' cy='96' r='50' fill='%23ff00ff'/><rect x='20' y='76' width='20' height='40' fill='%2300ff88'/><rect x='152' y='76' width='20' height='40' fill='%2300ff88'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23667eea' width='512' height='512'/><circle cx='256' cy='256' r='130' fill='%23ff00ff'/><rect x='50' y='206' width='50' height='100' fill='%2300ff88'/><rect x='412' y='206' width='50' height='100' fill='%2300ff88'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23667eea' width='540' height='720'/><text x='270' y='360' font-size='40' fill='white' text-anchor='middle'>Pong Game</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "prefer_related_applications": false
+}
