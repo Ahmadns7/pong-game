@@ -5,12 +5,16 @@
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 body {
@@ -21,9 +25,8 @@ body {
     align-items: center;
     min-height: 100vh;
     color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .container {
@@ -110,6 +113,7 @@ h1 {
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .instructions {
@@ -144,9 +148,12 @@ h1 {
     cursor: pointer;
     transition: all 0.2s;
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-    active: scale(0.95);
     -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-appearance: none;
+    appearance: none;
+    font-weight: bold;
 }
 
 .control-btn:active {
@@ -324,12 +331,55 @@ input, button, textarea, select {
     font-size: 16px;
 }
 
-/* Safe area for notch devices */
+/* Safe area for notch devices (iPhone, Android notch devices) */
 @supports (padding: max(0px)) {
-    body {
+    .container {
         padding-left: max(12px, env(safe-area-inset-left));
         padding-right: max(12px, env(safe-area-inset-right));
         padding-top: max(12px, env(safe-area-inset-top));
         padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+    body {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+    }
+    
+    .container {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+    }
+}
+
+/* Android specific fixes */
+@media (max-device-width: 768px) {
+    body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .container {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Hide URL bar and improve full-screen experience */
+body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
 }
